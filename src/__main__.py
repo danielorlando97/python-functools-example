@@ -1,25 +1,27 @@
 import sys
-from .command_line_handlers import CommandLineHandlers
-from .command_lines import Student, Presence
-from .persistence import PersistenceManager
-from .queries import scholar_time_by_students
+from .command_lines.command_line_handlers import CommandLineHandlers
+from .command_lines.command_lines import Student, Presence
+from .persistence.persistence import MemoryPersistenceLayer
+from .use_cases import scholar_time_by_students
+
 
 if __name__ == '__main__':
 
     args = sys.argv[1]
-    print(args)
+    # args = '../example.txt'
     with open(args, 'r') as f:
         commands = [Student, Presence]
-        db = PersistenceManager()
+        db = MemoryPersistenceLayer()
         handlers = CommandLineHandlers(db)
 
         for line in f.readlines():
-            print(line)
-            try:
-                cmd = next(filter(lambda x: x.match(line), commands))
-            except StopIteration:
-                raise Exception("Command Structure Error")
 
-            handlers.exec_cmd(cmd)
+            # We have to use for syntax because
+            # with list compression we will iterate all list log  
+            # and with iterator (filter + next) with have to call the function match two times  
+            for cmd in commands:
+                if (cmd := cmd.match(line)):
+                    handlers.exec_cmd(cmd)
+                    break
 
-        scholar_time_by_students(db['Student'], db['Presence'])
+        scholar_time_by_students.run(db)
