@@ -1,20 +1,16 @@
 from functools import singledispatchmethod
 from typing import Protocol
-from src.command_lines import CommandLine, Student, Presence
-
-
-class PersistenceRepositoryProtocol(Protocol):
-    def create(self, **body):
-        """
-        It should persist a new instance in the persistence layer with the body
-        It should also check if the body structure is correct
-        """
+from src.command_lines.command_lines import CommandLine, Student, Presence
+from src.persistence.models import Model, StudentModel, PresenceModel
 
 
 class PersistenceLayerProtocol(Protocol):
 
-    def __getitem__(self, collection) -> PersistenceRepositoryProtocol:
-        """It should return the repository for that collection"""
+    def create(self, model: Model):
+        """
+        It should persist a new instance in the persistence layer with the body
+        It should also check if the body structure is correct
+        """
 
 
 class CommandLineHandlers:
@@ -39,7 +35,7 @@ class CommandLineHandlers:
 
     @exec_cmd.register
     def _(self, cmd: Student):
-        self.db['Student'].create(name=cmd.name)
+        self.db.create(StudentModel(name=cmd.name))
 
     @exec_cmd.register
     def _(self, cmd: Presence):
@@ -51,13 +47,15 @@ class CommandLineHandlers:
         # This function because the test said that the time is by 24 hours
         end_min = int(h) * 60 + int(m)
 
-        self.db['Presence'].create(
-            name=cmd.student_name,
-            day=cmd.day,
-            start_time=cmd.start_time,
-            start_min=start_min,
-            end_time=cmd.end_time,
-            end_min=end_min,
-            delta_time=end_min - start_min,
-            room=cmd.room
+        self.db.create(
+            PresenceModel(
+                name=cmd.student_name,
+                day=cmd.day,
+                start_time=cmd.start_time,
+                start_min=start_min,
+                end_time=cmd.end_time,
+                end_min=end_min,
+                delta_time=end_min - start_min,
+                room=cmd.room
+            )
         )

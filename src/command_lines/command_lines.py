@@ -1,10 +1,12 @@
-from typing import Protocol, Union
+from typing import Union
+from abc import ABC, abstractclassmethod
 from dataclasses import dataclass
 import re
 
 
-class CommandLine(Protocol):
+class CommandLine(ABC):
     @staticmethod
+    @abstractclassmethod
     def match(line: str) -> Union['CommandLine', None]:
         """
         All command line has a fixed structure, 
@@ -15,21 +17,21 @@ class CommandLine(Protocol):
 
 
 @dataclass
-class Student(CommandLine):
+class Student:
     name: str
 
     @staticmethod
-    def match(line: str) -> Union['Student', None]:
-        regex = r'Student\s+(?P<name>\w+)'
+    def match(line: str) -> 'Student':
+        regex = r'Student\s+(?P<name>\w+)\s*\n*'
 
         if (match := re.fullmatch(regex, line)):
-            return Student(match.group('name'))
+            return Student(name=match.group('name'))
 
         return None
 
 
 @dataclass
-class Presence(CommandLine):
+class Presence:
     student_name: str
     day: int
     start_time: str
@@ -37,14 +39,14 @@ class Presence(CommandLine):
     room: str
 
     @staticmethod
-    def match(line: str) -> Union['Presence', None]:
+    def match(line: str) -> 'Presence':
         # This regular expression matches with the following tags
         # 1- name: An identifier (\w+)
         # 2- day: one integer between 1-7
         # 3- start_time: an hour in the format HH:MM (\d\d:\d\d)
         # 4- end_time: an hour in the format HH:MM (\d\d:\d\d)
         # 5- room: An identifier (\w+)
-        regex = r'Presence\s+(?P<name>\w+)\s+(?P<day>[1234567])\s+(?P<start_time>\d\d:\d\d)\s+(?P<end_time>\d\d:\d\d)\s+(?P<room>\w+)'
+        regex = r'Presence\s+(?P<name>\w+)\s+(?P<day>[1234567])\s+(?P<start_time>\d\d:\d\d)\s+(?P<end_time>\d\d:\d\d)\s+(?P<room>\w+)\s*\n*'
 
         if (match := re.fullmatch(regex, line)):
             return Presence(
