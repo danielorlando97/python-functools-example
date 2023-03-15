@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.command_lines import Student, Presence
+from src.command_lines.command_lines import Student, Presence
 
 
 class StudentCommandTest(TestCase):
