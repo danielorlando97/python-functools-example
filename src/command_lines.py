@@ -28,6 +28,7 @@ class Student(CommandLine):
         return None
 
 
+@dataclass
 class Presence(CommandLine):
     student_name: str
     day: int
@@ -37,7 +38,13 @@ class Presence(CommandLine):
 
     @staticmethod
     def match(line: str) -> Union['Presence', None]:
-        regex = r'Presence\s+(?P<name>\w+)\s+(?P<day>[1234567])\s+(?P<start_time>\d\d:\d\d)\s+(?P<end_time>\d\d:\d\d))\s+(?P<room>\w+)'
+        # This regular expression matches with the following tags
+        # 1- name: An identifier (\w+)
+        # 2- day: one integer between 1-7
+        # 3- start_time: an hour in the format HH:MM (\d\d:\d\d)
+        # 4- end_time: an hour in the format HH:MM (\d\d:\d\d)
+        # 5- room: An identifier (\w+)
+        regex = r'Presence\s+(?P<name>\w+)\s+(?P<day>[1234567])\s+(?P<start_time>\d\d:\d\d)\s+(?P<end_time>\d\d:\d\d)\s+(?P<room>\w+)'
 
         if (match := re.fullmatch(regex, line)):
             return Presence(
