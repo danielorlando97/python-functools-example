@@ -2,7 +2,7 @@ from functools import singledispatchmethod
 from typing import Protocol
 from src.command_lines.command_lines import CommandLine, Student, Presence
 from src.persistence.models import Model, StudentModel, PresenceModel
-
+from src.errors import InformationError
 
 class PersistenceLayerProtocol(Protocol):
 
@@ -46,6 +46,9 @@ class CommandLineHandlers:
         h, m = cmd.end_time.split(':')
         # This function because the test said that the time is by 24 hours
         end_min = int(h) * 60 + int(m)
+
+        if end_min <= start_min:
+            raise InformationError("The start time can't be greater or equal than the end time")
 
         self.db.create(
             PresenceModel(
