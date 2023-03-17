@@ -16,6 +16,16 @@ class CommandLine(ABC):
         """
 
 
+class Space:
+    @staticmethod
+    def match(line: str):
+        regex = r'\s*\n*'
+
+        if (re.fullmatch(regex, line)):
+            return Space()
+
+        return None
+    
 @dataclass
 class Student:
     name: str
