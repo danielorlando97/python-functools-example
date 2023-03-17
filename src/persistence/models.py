@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 class Model:
-    """Root of class """
+    """Root of class hierarchy"""
 
 @dataclass
 class StudentModel(Model):
