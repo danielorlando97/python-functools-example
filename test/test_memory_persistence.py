@@ -1,7 +1,7 @@
 from unittest import TestCase
 from src.persistence.models import StudentModel, PresenceModel
 from src.persistence.persistence import MemoryPersistenceLayer
-
+from src.errors import PersistenceError
 
 class MemoryPersistence(TestCase):
 
@@ -86,3 +86,19 @@ class MemoryPersistence(TestCase):
         assert 1 in result and 2 in result
         assert len(result[1]) == 1
         assert len(result[2]) == 1
+
+    def test_fail_create_presence(self):
+        db = MemoryPersistenceLayer()
+        try:
+            db.create(self.create_default_presence())
+            assert False
+        except PersistenceError:
+            pass
+
+    def test_fail_create_presence(self):
+        db = MemoryPersistenceLayer()
+        try:
+            db.student_presence_group_by_day("Daniel")
+            assert False
+        except PersistenceError:
+            pass

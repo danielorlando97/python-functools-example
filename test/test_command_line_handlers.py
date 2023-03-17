@@ -3,6 +3,7 @@ from src.command_lines.command_lines import Student, Presence
 from src.command_lines.command_line_handlers import CommandLineHandlers, PersistenceLayerProtocol
 from src.persistence.models import StudentModel, PresenceModel
 from collections import defaultdict
+from src.errors import InformationError
 class MockRepository(PersistenceLayerProtocol):
     def __init__(self) -> None:
         self.db = {}
@@ -47,3 +48,13 @@ class CommandHandlerTest(TestCase):
         assert db.db['Daniel'][1].start_min == start_min
         assert db.db['Daniel'][1].end_min == end_min
         assert db.db['Daniel'][1].delta_time == end_min - start_min
+
+    def test_fail_information_error(self):
+        db = MockRepository()
+        handler = CommandLineHandlers(db)
+        presence = Presence('Daniel', 1, '02:20', '1:40', 'F100')
+        
+        try:
+            handler.exec_cmd(presence) 
+        except InformationError:
+            pass
