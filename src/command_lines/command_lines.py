@@ -68,3 +68,31 @@ class Presence:
             )
 
         return None
+
+
+@dataclass
+class Classroom:
+    room_code: str
+    building: str
+    x: float
+    y: float
+
+    @staticmethod
+    def match(line: str) -> 'Classroom':
+        # This regular expression matches with the following tags
+        # 1- room_code: room code (\w+)
+        # 2- building: name building
+        # 3- x: coordinated (\d+.\d+)
+        # 4- y: coordinated (\d+.\d+)
+
+        regex = r'Classroom\s+(?P<room_code>\w+)\s+(?P<building>\w+)\s+(?P<x>\d+(\.\d+){0,1})\s+(?P<y>\d+(\.\d+){0,1})\s*\n*'
+
+        if (match := re.fullmatch(regex, line)):
+            return Classroom(
+                room_code= match.group('room_code'),
+                building=match.group('building'),
+                x=match.group('x'),
+                y=match.group('y')
+            )
+
+        return None

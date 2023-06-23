@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.command_lines.command_lines import Student, Presence
+from src.command_lines.command_lines import Student, Presence, Classroom
 
 
 class StudentCommandTest(TestCase):
@@ -58,5 +58,14 @@ class PresenceCommandTest(TestCase):
 
         cmd = 'Presence  Matthias   2 09:04  10:35 F100   \n'
         result = Presence.match(cmd)
+
+        assert result != None
+
+
+class CommandCommandTest(TestCase):
+    def test_success_match(self):
+
+        cmd = 'Classroom R100 LAB 15.4 16'
+        result = Classroom.match(cmd)
 
         assert result != None

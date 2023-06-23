@@ -1,7 +1,7 @@
 from functools import singledispatchmethod
 from typing import Protocol
-from src.command_lines.command_lines import CommandLine, Student, Presence
-from src.persistence.models import Model, StudentModel, PresenceModel
+from src.command_lines.command_lines import CommandLine, Student, Presence, Classroom
+from src.persistence.models import Model, StudentModel, PresenceModel, ClassroomModel
 from src.errors import InformationError
 
 class PersistenceLayerProtocol(Protocol):
@@ -60,5 +60,17 @@ class CommandLineHandlers:
                 end_min=end_min,
                 delta_time=end_min - start_min,
                 room=cmd.room
+            )
+        )
+
+
+    @exec_cmd.register
+    def _(self, cmd: Classroom):
+        self.db.create(
+            ClassroomModel(
+                room_code= cmd.room_code,
+                building= cmd.building,
+                x= float(cmd.x),
+                y= float(cmd.y)
             )
         )

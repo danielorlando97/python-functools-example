@@ -28,3 +28,13 @@ class PresenceModel(Model):
     #         ) 
         
     #     return False
+
+@dataclass
+class ClassroomModel(Model):
+    room_code: str
+    building: str
+    x: float
+    y: float    
+
+    # def __hash__(self) -> int:
+    #     return (self.room_code, self.building)
